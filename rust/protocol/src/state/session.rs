@@ -210,6 +210,10 @@ impl SessionState {
         self.session.receiver_chains.push(chain);
 
         if self.session.receiver_chains.len() > consts::MAX_RECEIVER_CHAINS {
+            log::info!(
+                "Trimming excessive receiver_chain count: {}",
+                self.session.receiver_chains.len()
+            );
             self.session.receiver_chains.remove(0);
         }
 
@@ -559,6 +563,8 @@ impl SessionRecord {
             if self.previous_sessions.len() > consts::ARCHIVED_STATES_MAX_LENGTH {
                 self.previous_sessions.pop_back();
             }
+        } else {
+            log::info!("Skipping archive, current session state is fresh.");
         }
 
         Ok(())
